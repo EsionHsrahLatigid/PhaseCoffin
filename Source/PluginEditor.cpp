@@ -53,6 +53,12 @@ PhaseCoffinAudioProcessorEditor::PhaseCoffinAudioProcessorEditor(PhaseCoffinAudi
     setDescription("PhaseCoffin monochrome 8-bit custom editor");
     setWantsKeyboardFocus(true);
 
+    parameterDisplay.setComponentID("phasecoffin-parameter-display");
+    parameterDisplay.setName("PhaseCoffin parameter display");
+    parameterDisplay.setTitle("PhaseCoffin parameter display");
+    parameterDisplay.setDescription("Quantized display of stages, center, depth, and feedback parameter state.");
+    addAndMakeVisible(parameterDisplay);
+
     for (std::size_t i = 0; i < controlCount; ++i)
     {
         auto& slider = sliders[i];
@@ -73,11 +79,14 @@ PhaseCoffinAudioProcessorEditor::PhaseCoffinAudioProcessorEditor(PhaseCoffinAudi
         addAndMakeVisible(label);
     }
 
+    timerCallback();
+    startTimerHz(30);
     setSize(defaultWidth, defaultHeight);
 }
 
 PhaseCoffinAudioProcessorEditor::~PhaseCoffinAudioProcessorEditor()
 {
+    stopTimer();
     setLookAndFeel(nullptr);
 }
 
@@ -88,6 +97,30 @@ void PhaseCoffinAudioProcessorEditor::paint(juce::Graphics& g)
 
 void PhaseCoffinAudioProcessorEditor::resized()
 {
+    parameterDisplay.setBounds(design::parameterDisplayArea(getLocalBounds()));
     for (std::size_t i = 0; i < controlCount; ++i)
         design::layoutLabelledControl(labels[i], sliders[i], design::controlCell(getLocalBounds(), i));
+}
+
+void PhaseCoffinAudioProcessorEditor::timerCallback()
+{
+    parameterDisplay.setValues({
+        normalizeSlider(4),
+        normalizeSlider(2),
+        normalizeSlider(1),
+        normalizeSlider(5)
+    });
+}
+
+float PhaseCoffinAudioProcessorEditor::normalizeControlValue(const char* parameterID, double value) const
+{
+    if (auto* parameter = ownerProcessor.parameters.getParameter(parameterID))
+        return juce::jlimit(0.0f, 1.0f, parameter->convertTo0to1(static_cast<float>(value)));
+    return 0.0f;
+}
+
+float PhaseCoffinAudioProcessorEditor::normalizeSlider(std::size_t index) const
+{
+    jassert(index < controlCount);
+    return normalizeControlValue(ids[index], sliders[index].getValue());
 }

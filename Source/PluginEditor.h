@@ -7,7 +7,8 @@
 
 class PhaseCoffinAudioProcessor;
 
-class PhaseCoffinAudioProcessorEditor final : public juce::AudioProcessorEditor
+class PhaseCoffinAudioProcessorEditor final : public juce::AudioProcessorEditor,
+                                              private juce::Timer
 {
 public:
     explicit PhaseCoffinAudioProcessorEditor(PhaseCoffinAudioProcessor&);
@@ -23,6 +24,8 @@ public:
     static constexpr int minimumHeight = ehl::juce_design::Metrics::minimumHeight;
 
 private:
+    void timerCallback() override;
+
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     static constexpr std::size_t controlCount = 11;
 
@@ -30,9 +33,13 @@ private:
     ehl::juce_design::LookAndFeel lookAndFeel;
     juce::TooltipWindow tooltipWindow { this, 700 };
     juce::String tooltipText;
+    ehl::juce_design::ParameterDisplay parameterDisplay { ehl::juce_design::DisplayKind::phaser };
     std::array<juce::Slider, controlCount> sliders;
     std::array<juce::Label, controlCount> labels;
     std::array<std::unique_ptr<SliderAttachment>, controlCount> attachments;
+
+    float normalizeControlValue(const char* parameterID, double value) const;
+    float normalizeSlider(std::size_t index) const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseCoffinAudioProcessorEditor)
 };
