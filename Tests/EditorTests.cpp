@@ -7,6 +7,11 @@
 #include <cmath>
 #include <string>
 
+struct EditorTestAccess
+{
+    static void refresh(PhaseCoffinAudioProcessorEditor& editor) { editor.timerCallback(); }
+};
+
 namespace
 {
 void checkPaintContract(juce::AudioProcessorEditor& editor, int width, int height)
@@ -85,10 +90,9 @@ void setSliderToNormalized(PhaseCoffinAudioProcessor& processor, juce::Slider& s
     slider.setValue(parameter->convertFrom0to1(normalized), juce::sendNotificationSync);
 }
 
-void dispatchEditorTimer()
+void dispatchEditorTimer(PhaseCoffinAudioProcessorEditor& editor)
 {
-    juce::Thread::sleep(40);
-    juce::Timer::callPendingTimersSynchronously();
+    EditorTestAccess::refresh(editor);
 }
 
 void checkMaximumLayout(juce::AudioProcessorEditor& editor)
@@ -174,7 +178,7 @@ int main()
         auto& depth = requireSlider(*editor, phasecoffin::parameters::depth);
         auto& feedback = requireSlider(*editor, phasecoffin::parameters::feedback);
 
-        dispatchEditorTimer();
+        dispatchEditorTimer(*custom);
         auto values = display->getValues();
         test_support::check(nearlyEqual(values[0], parameterNormalizedValue(processor, phasecoffin::parameters::stages, 6.0f)), "display reads default stages");
         test_support::check(nearlyEqual(values[1], parameterNormalizedValue(processor, phasecoffin::parameters::center, 620.0f)), "display reads default center");
@@ -185,7 +189,7 @@ int main()
         setSliderToNormalized(processor, center, phasecoffin::parameters::center, 0.5f);
         setSliderToNormalized(processor, depth, phasecoffin::parameters::depth, 1.0f);
         setSliderToNormalized(processor, feedback, phasecoffin::parameters::feedback, 0.25f);
-        dispatchEditorTimer();
+        dispatchEditorTimer(*custom);
         values = display->getValues();
         test_support::check(nearlyEqual(values[0], 0.0f) && nearlyEqual(values[1], 0.5f)
                                 && nearlyEqual(values[2], 1.0f) && nearlyEqual(values[3], 0.25f),
