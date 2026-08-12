@@ -4,6 +4,8 @@
 
 namespace
 {
+namespace design = ehl::juce_design;
+
 constexpr const char* ids[] {
     phasecoffin::parameters::rate,
     phasecoffin::parameters::depth,
@@ -36,17 +38,14 @@ constexpr const char* tips[] {
     "Output trim after the wet/dry mix."
 };
 
-juce::Colour grey(int value)
-{
-    return juce::Colour(static_cast<juce::uint8>(value), static_cast<juce::uint8>(value), static_cast<juce::uint8>(value));
-}
 } // namespace
 
 PhaseCoffinAudioProcessorEditor::PhaseCoffinAudioProcessorEditor(PhaseCoffinAudioProcessor& p)
     : AudioProcessorEditor(&p), ownerProcessor(p),
       tooltipText("PhaseCoffin: every host parameter is exposed as a labelled monochrome control with a stable component ID.")
 {
-    setResizeLimits(minimumWidth, minimumHeight, defaultWidth * 2, defaultHeight * 2);
+    setLookAndFeel(&lookAndFeel);
+    setResizeLimits(minimumWidth, minimumHeight, design::Metrics::maximumWidth, design::Metrics::maximumHeight);
     setResizable(true, true);
     setName("PhaseCoffin editor");
     setComponentID("phasecoffin-editor");
@@ -57,27 +56,19 @@ PhaseCoffinAudioProcessorEditor::PhaseCoffinAudioProcessorEditor(PhaseCoffinAudi
     for (std::size_t i = 0; i < controlCount; ++i)
     {
         auto& slider = sliders[i];
-        slider.setSliderStyle(juce::Slider::LinearHorizontal);
-        slider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 88, 24);
-        slider.setColour(juce::Slider::trackColourId, juce::Colour(0xfff2f2f0));
-        slider.setColour(juce::Slider::backgroundColourId, juce::Colour(0xff2a2a2a));
-        slider.setColour(juce::Slider::thumbColourId, juce::Colour(0xfff2f2f0));
-        slider.setColour(juce::Slider::textBoxTextColourId, juce::Colour(0xfff2f2f0));
-        slider.setColour(juce::Slider::textBoxBackgroundColourId, grey(5));
-        slider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colour(0xff8a8a86));
+        design::styleSlider(slider);
         slider.setName(names[i]);
         slider.setComponentID(juce::String("phasecoffin-") + ids[i]);
         slider.setTitle(names[i]);
         slider.setDescription(tips[i]);
         slider.setTooltip(tips[i]);
-        slider.setWantsKeyboardFocus(true);
         addAndMakeVisible(slider);
         attachments[i] = std::make_unique<SliderAttachment>(ownerProcessor.parameters, ids[i], slider);
 
         auto& label = labels[i];
+        design::styleLabel(label);
         label.setText(names[i], juce::dontSendNotification);
-        label.setJustificationType(juce::Justification::centredLeft);
-        label.setColour(juce::Label::textColourId, juce::Colour(0xfff2f2f0));
+        label.setName(names[i]);
         label.setInterceptsMouseClicks(false, false);
         addAndMakeVisible(label);
     }
@@ -85,42 +76,18 @@ PhaseCoffinAudioProcessorEditor::PhaseCoffinAudioProcessorEditor(PhaseCoffinAudi
     setSize(defaultWidth, defaultHeight);
 }
 
+PhaseCoffinAudioProcessorEditor::~PhaseCoffinAudioProcessorEditor()
+{
+    setLookAndFeel(nullptr);
+}
+
 void PhaseCoffinAudioProcessorEditor::paint(juce::Graphics& g)
 {
-    const auto area = getLocalBounds();
-    g.fillAll(juce::Colour(0xff050505));
-
-    g.setColour(juce::Colour(0xfff2f2f0));
-    g.setFont(juce::FontOptions(24.0f));
-    g.drawText("PhaseCoffin", 32, 16, area.getWidth() - 64, 32, juce::Justification::centredLeft);
-
-    g.setColour(juce::Colour(0xff8a8a86));
-    g.setFont(juce::FontOptions(12.0f));
-    g.drawText("PHASER", 32, 48, area.getWidth() - 64, 16, juce::Justification::centredLeft);
-
-    g.setColour(juce::Colour(0xff2a2a2a));
-    g.drawHorizontalLine(72, 32.0f, static_cast<float>(area.getWidth() - 32));
+    design::paintEditorChrome(g, getLocalBounds(), "PhaseCoffin", "PHASER");
 }
 
 void PhaseCoffinAudioProcessorEditor::resized()
 {
-    auto area = getLocalBounds().reduced(32);
-    area.removeFromTop(48);
-    const int labelWidth = 86;
-    const int gap = 8;
-    const int columns = 2;
-    const int rows = 6;
-    const int usableWidth = area.getWidth() - gap * (columns - 1);
-    const int columnWidth = usableWidth / columns;
-    const int rowHeight = juce::jmax(28, juce::jmin(40, (area.getHeight() - gap * (rows - 1)) / rows));
-
     for (std::size_t i = 0; i < controlCount; ++i)
-    {
-        const int column = static_cast<int>(i / static_cast<std::size_t>(rows));
-        const int row = static_cast<int>(i % static_cast<std::size_t>(rows));
-        const int x = area.getX() + column * (columnWidth + gap);
-        const int y = area.getY() + row * (rowHeight + gap);
-        labels[i].setBounds(x, y, labelWidth, rowHeight);
-        sliders[i].setBounds(x + labelWidth, y, columnWidth - labelWidth, rowHeight);
-    }
+        design::layoutLabelledControl(labels[i], sliders[i], design::controlCell(getLocalBounds(), i));
 }

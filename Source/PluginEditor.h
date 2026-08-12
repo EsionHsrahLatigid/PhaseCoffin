@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ehl/juce_design/EhlDesign.h>
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <array>
 #include <memory>
@@ -10,22 +11,23 @@ class PhaseCoffinAudioProcessorEditor final : public juce::AudioProcessorEditor
 {
 public:
     explicit PhaseCoffinAudioProcessorEditor(PhaseCoffinAudioProcessor&);
-    ~PhaseCoffinAudioProcessorEditor() override = default;
+    ~PhaseCoffinAudioProcessorEditor() override;
 
     void paint(juce::Graphics&) override;
     void resized() override;
     juce::String getTooltip() { return tooltipText; }
 
-    static constexpr int defaultWidth = 960;
-    static constexpr int defaultHeight = 544;
-    static constexpr int minimumWidth = 720;
-    static constexpr int minimumHeight = 432;
+    static constexpr int defaultWidth = ehl::juce_design::Metrics::defaultWidth;
+    static constexpr int defaultHeight = ehl::juce_design::Metrics::defaultHeight;
+    static constexpr int minimumWidth = ehl::juce_design::Metrics::minimumWidth;
+    static constexpr int minimumHeight = ehl::juce_design::Metrics::minimumHeight;
 
 private:
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     static constexpr std::size_t controlCount = 11;
 
     PhaseCoffinAudioProcessor& ownerProcessor;
+    ehl::juce_design::LookAndFeel lookAndFeel;
     juce::TooltipWindow tooltipWindow { this, 700 };
     juce::String tooltipText;
     std::array<juce::Slider, controlCount> sliders;

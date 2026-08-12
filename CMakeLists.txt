@@ -46,6 +46,8 @@ if(PHASECOFFIN_BUILD_PLUGIN)
         FetchContent_MakeAvailable(JUCE)
     endif()
 
+    add_subdirectory(modules/juce-ehl-design-module)
+
     set(PHASECOFFIN_FORMATS VST3 Standalone)
     if(APPLE)
         list(APPEND PHASECOFFIN_FORMATS AU)
@@ -84,6 +86,7 @@ if(PHASECOFFIN_BUILD_PLUGIN)
     target_link_libraries(PhaseCoffin
         PRIVATE
             phasecoffin_dsp
+            EHL::JuceDesign
             juce::juce_audio_utils
             juce::juce_dsp
         PUBLIC
@@ -154,7 +157,7 @@ if(PHASECOFFIN_BUILD_PLUGIN)
 
         add_executable(phasecoffin_editor_tests Tests/EditorTests.cpp)
         target_include_directories(phasecoffin_editor_tests PRIVATE Source)
-        target_link_libraries(phasecoffin_editor_tests PRIVATE PhaseCoffin juce::juce_audio_utils)
+        target_link_libraries(phasecoffin_editor_tests PRIVATE PhaseCoffin EHL::JuceDesign juce::juce_audio_utils)
         add_test(NAME phasecoffin_editor_tests COMMAND phasecoffin_editor_tests)
 
         add_test(
