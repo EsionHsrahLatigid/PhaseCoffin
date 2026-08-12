@@ -10,6 +10,6 @@ The audio callback and direct DSP callees do not allocate heap memory, acquire l
 
 ## UI
 
-The editor uses the DHN9 monochrome 8-bit system: 8 px grid, grayscale palette, fixed procedural phase-coffin/notch motif, no external images, and no external fonts. The default size is 960 x 544 and the minimum is 720 x 432.
+The editor uses the strict DHN9 simple monochrome 8-bit contract: flat four-level palette only (`#050505`, `#2A2A2A`, `#8A8A86`, `#F2F2F0`), 4 px base grid / 8 px major spacing, product name at `y=16`, compact function label at `y=48`, one 1 px divider at `y=72`, and controls starting at absolute `y=80`. There is no full-canvas grid, tagline, package ID, decorative motif, fake visualizer, meter, panel, outer frame, or parameter-driven atmospheric paint. The default size remains 960 x 544 and the minimum remains 720 x 432.
 
-Every parameter has an attached visible control with a stable component ID (`phasecoffin-<parameter-id>`), accessible name/title/description, tooltip, and keyboard focus. `GenericAudioProcessorEditor` is banned and covered by tests.
+Every parameter has an attached visible control with a stable component ID (`phasecoffin-<parameter-id>`), accessible name/title/description, tooltip, and keyboard focus. `GenericAudioProcessorEditor` is banned and covered by tests. DSP, parameter IDs, bundle ID, and accessibility contracts are unchanged.
