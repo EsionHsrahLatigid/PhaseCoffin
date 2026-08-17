@@ -5,7 +5,7 @@
 
 namespace phasecoffin::dsp
 {
-class FoundationDSP
+class PhaseCoffinDSP
 {
 public:
     struct Parameters

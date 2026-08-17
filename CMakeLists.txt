@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(PhaseCoffin VERSION 0.1.1 LANGUAGES C CXX)
+project(PhaseCoffin VERSION 0.1.2 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -12,7 +12,7 @@ set(PHASECOFFIN_ARTIFACT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/artifacts" CACHE PATH
 set(EHL_JUCE_SOURCE_DIR "" CACHE PATH "Existing JUCE source checkout; avoids network when set")
 
 add_library(phasecoffin_dsp STATIC
-    Source/dsp/FoundationDSP.cpp)
+    Source/dsp/PhaseCoffinDSP.cpp)
 target_include_directories(phasecoffin_dsp PUBLIC Source)
 target_compile_features(phasecoffin_dsp PUBLIC cxx_std_17)
 if(MSVC)

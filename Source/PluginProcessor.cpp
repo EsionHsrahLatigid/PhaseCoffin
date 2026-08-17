@@ -48,7 +48,7 @@ void PhaseCoffinAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
     juce::ignoreUnused(midiMessages);
     juce::ScopedNoDenormals noDenormals;
 
-    phasecoffin::dsp::FoundationDSP::Parameters dspParameters;
+    phasecoffin::dsp::PhaseCoffinDSP::Parameters dspParameters;
     dspParameters.rateHz = parameters.getRawParameterValue(phasecoffin::parameters::rate)->load();
     dspParameters.depth = parameters.getRawParameterValue(phasecoffin::parameters::depth)->load();
     dspParameters.centerHz = parameters.getRawParameterValue(phasecoffin::parameters::center)->load();

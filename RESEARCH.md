@@ -4,8 +4,8 @@
 
 - Julius O. Smith's PASP phasing material supports the established phaser identity used here: cascaded allpass sections mixed with dry signal to create moving notches.
 - Hartmann's flanging/phasing context supports keeping this product distinct from JetScab: PhaseCoffin uses allpass phase rotation, not a short modulated delay line.
-- JUCE APVTS and the local Plitch/DHN9 scaffold pattern support host-visible parameters, state round-trip tests, and custom editor verification.
-- G001 selected PhaseCoffin as `jp.ehl.phasecoffin` / `PhCf` with dual six-stage allpass banks, smoothed coefficients, feedback, stereo phase, and optional barberpole-style motion.
+- JUCE APVTS and local EHL plug-in patterns support host-visible parameters, state round-trip tests, and custom editor verification.
+- PhaseCoffin uses `jp.ehl.phasecoffin` / `PhCf` with dual six-stage allpass banks, smoothed coefficients, feedback, stereo phase, and optional barberpole-style motion.
 
 ## Decisions
 
@@ -19,8 +19,8 @@
 ## Rejected Alternatives
 
 - A short delay-line flanger core was rejected because it belongs to JetScab and would blur the effect-class boundary.
-- Static allpass/EQ notches were rejected because G001 requires performative sweep motion.
-- Feedback at or above unity was rejected because the DHN9 safety invariant requires finite deterministic long renders.
+- Static allpass/EQ notches were rejected because the product is built around performative sweep motion.
+- Feedback at or above unity was rejected because long renders must remain finite and deterministic.
 
 ## Test Oracles
 

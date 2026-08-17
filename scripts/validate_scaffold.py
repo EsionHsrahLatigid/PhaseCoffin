@@ -6,7 +6,7 @@ import sys
 root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
 required = [
     "CMakeLists.txt", "CMakePresets.json", "Source/PluginProcessor.cpp",
-    "Source/PluginEditor.cpp", "Source/dsp/FoundationDSP.cpp",
+    "Source/PluginEditor.cpp", "Source/dsp/PhaseCoffinDSP.cpp",
     "Tests/DSPTests.cpp", "Tests/PluginTests.cpp", "Tests/EditorTests.cpp",
     ".github/workflows/ci.yml", ".github/workflows/release.yml",
 ]

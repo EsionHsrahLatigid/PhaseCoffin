@@ -1,18 +1,18 @@
 #include "TestSupport.h"
-#include "dsp/FoundationDSP.h"
+#include "dsp/PhaseCoffinDSP.h"
 
 #include <cmath>
 #include <limits>
 
 namespace
 {
-using phasecoffin::dsp::FoundationDSP;
+using phasecoffin::dsp::PhaseCoffinDSP;
 
 constexpr float pi = 3.14159265359f;
 
-FoundationDSP::Parameters harshDefaults()
+PhaseCoffinDSP::Parameters harshDefaults()
 {
-    FoundationDSP::Parameters p;
+    PhaseCoffinDSP::Parameters p;
     p.rateHz = 0.7f;
     p.depth = 0.9f;
     p.centerHz = 680.0f;
@@ -43,7 +43,7 @@ int main()
 {
     return test_support::run("phasecoffin_dsp_tests", [] {
         {
-            FoundationDSP dsp;
+            PhaseCoffinDSP dsp;
             auto p = harshDefaults();
             p.feedback = 0.0f;
             p.mix = 1.0f;
@@ -65,8 +65,8 @@ int main()
         }
 
         {
-            FoundationDSP staticDsp;
-            FoundationDSP movingDsp;
+            PhaseCoffinDSP staticDsp;
+            PhaseCoffinDSP movingDsp;
             auto p = harshDefaults();
             p.feedback = 0.0f;
             p.barberDirection = 0;
@@ -91,7 +91,7 @@ int main()
         }
 
         {
-            FoundationDSP dsp;
+            PhaseCoffinDSP dsp;
             auto p = harshDefaults();
             p.feedback = 0.0f;
             p.barberDirection = 1;
@@ -111,7 +111,7 @@ int main()
         }
 
         {
-            FoundationDSP dsp;
+            PhaseCoffinDSP dsp;
             auto p = harshDefaults();
             p.feedback = 0.88f;
             p.mix = 1.0f;
@@ -132,7 +132,7 @@ int main()
         }
 
         {
-            FoundationDSP dsp;
+            PhaseCoffinDSP dsp;
             auto p = harshDefaults();
             p.feedback = 0.0f;
             p.mix = 0.0f;
@@ -147,7 +147,7 @@ int main()
         }
 
         {
-            FoundationDSP dsp;
+            PhaseCoffinDSP dsp;
             auto p = harshDefaults();
             p.feedback = 0.2f;
             dsp.setTargets(p);

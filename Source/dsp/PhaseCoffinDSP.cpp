@@ -1,17 +1,17 @@
-#include "dsp/FoundationDSP.h"
+#include "dsp/PhaseCoffinDSP.h"
 
 #include <cmath>
 
 namespace phasecoffin::dsp
 {
-void FoundationDSP::prepare(double sampleRate, int, int channels) noexcept
+void PhaseCoffinDSP::prepare(double sampleRate, int, int channels) noexcept
 {
     sampleRate_ = std::isfinite(sampleRate) && sampleRate > 1000.0 ? sampleRate : 44100.0;
     channels_ = channels < 0 ? 0 : (channels > 2 ? 2 : channels);
     reset();
 }
 
-void FoundationDSP::reset() noexcept
+void PhaseCoffinDSP::reset() noexcept
 {
     current_ = target_;
     for (auto& channel : stages_)
@@ -27,7 +27,7 @@ void FoundationDSP::reset() noexcept
     feedbackSample_[1] = 0.0f;
 }
 
-void FoundationDSP::setTargets(const Parameters& parameters) noexcept
+void PhaseCoffinDSP::setTargets(const Parameters& parameters) noexcept
 {
     target_.rateHz = clamp(sanitize(parameters.rateHz), 0.02f, 20.0f);
     target_.depth = clamp(sanitize(parameters.depth), 0.0f, 1.0f);
@@ -42,7 +42,7 @@ void FoundationDSP::setTargets(const Parameters& parameters) noexcept
     target_.trimDb = clamp(sanitize(parameters.trimDb), -24.0f, 12.0f);
 }
 
-float FoundationDSP::processSample(float input, int channel) noexcept
+float PhaseCoffinDSP::processSample(float input, int channel) noexcept
 {
     input = clamp(sanitize(input), -8.0f, 8.0f);
     const auto index = channel <= 0 ? 0 : 1;
@@ -75,7 +75,7 @@ float FoundationDSP::processSample(float input, int channel) noexcept
     return clamp(sanitize(output), -4.0f, 4.0f);
 }
 
-float FoundationDSP::processDebugAllpassBankSample(float input, int channel, int bank) noexcept
+float PhaseCoffinDSP::processDebugAllpassBankSample(float input, int channel, int bank) noexcept
 {
     input = clamp(sanitize(input), -8.0f, 8.0f);
     const auto index = channel <= 0 ? 0 : 1;
@@ -85,7 +85,7 @@ float FoundationDSP::processDebugAllpassBankSample(float input, int channel, int
     return processBank(input, index, bankIndex, phase_[index], bankIndex == 0 ? 0.0f : 0.5f);
 }
 
-void FoundationDSP::smoothParameters() noexcept
+void PhaseCoffinDSP::smoothParameters() noexcept
 {
     constexpr float smoothing = 0.0025f;
     current_.rateHz += (target_.rateHz - current_.rateHz) * smoothing;
@@ -101,7 +101,7 @@ void FoundationDSP::smoothParameters() noexcept
     current_.barberDirection = target_.barberDirection;
 }
 
-float FoundationDSP::processBank(float input, int channel, int bank, float lfo, float bankOffset) noexcept
+float PhaseCoffinDSP::processBank(float input, int channel, int bank, float lfo, float bankOffset) noexcept
 {
     const float motion = 0.5f + 0.5f * std::sin(6.28318530718f * wrap01(lfo + bankOffset));
     const float skewed = std::pow(clamp(motion, 0.0f, 1.0f), 0.35f + current_.coffinSkew * 2.4f);
@@ -123,7 +123,7 @@ float FoundationDSP::processBank(float input, int channel, int bank, float lfo, 
     return y;
 }
 
-float FoundationDSP::processAllpass(float input, AllpassStage& stage, float targetCoefficient) noexcept
+float PhaseCoffinDSP::processAllpass(float input, AllpassStage& stage, float targetCoefficient) noexcept
 {
     stage.coefficient += (targetCoefficient - stage.coefficient) * 0.015f;
     stage.coefficient = clamp(stage.coefficient, -0.985f, 0.985f);
@@ -132,28 +132,28 @@ float FoundationDSP::processAllpass(float input, AllpassStage& stage, float targ
     return sanitize(y);
 }
 
-float FoundationDSP::sanitize(float value) noexcept
+float PhaseCoffinDSP::sanitize(float value) noexcept
 {
     return std::isfinite(value) ? value : 0.0f;
 }
 
-float FoundationDSP::clamp(float value, float lo, float hi) noexcept
+float PhaseCoffinDSP::clamp(float value, float lo, float hi) noexcept
 {
     return value < lo ? lo : (value > hi ? hi : value);
 }
 
-float FoundationDSP::wrap01(float value) noexcept
+float PhaseCoffinDSP::wrap01(float value) noexcept
 {
     value -= std::floor(value);
     return value < 0.0f ? value + 1.0f : value;
 }
 
-float FoundationDSP::dbToGain(float db) noexcept
+float PhaseCoffinDSP::dbToGain(float db) noexcept
 {
     return std::pow(10.0f, db / 20.0f);
 }
 
-float FoundationDSP::coefficientForFrequency(float frequencyHz, double sampleRate) noexcept
+float PhaseCoffinDSP::coefficientForFrequency(float frequencyHz, double sampleRate) noexcept
 {
     const float nyquistSafe = static_cast<float>(sampleRate * 0.46);
     frequencyHz = clamp(frequencyHz, 20.0f, nyquistSafe);

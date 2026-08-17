@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dsp/FoundationDSP.h"
+#include "dsp/PhaseCoffinDSP.h"
 
 #include <juce_audio_processors/juce_audio_processors.h>
 
@@ -36,7 +36,7 @@ public:
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
     juce::AudioProcessorValueTreeState parameters;
-    phasecoffin::dsp::FoundationDSP dsp;
+    phasecoffin::dsp::PhaseCoffinDSP dsp;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseCoffinAudioProcessor)
