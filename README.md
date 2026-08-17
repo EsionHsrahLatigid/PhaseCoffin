@@ -1,6 +1,6 @@
 # PhaseCoffin
 
-PhaseCoffin is an EHL Digital Harsh Noise phaser. It uses two six-stage first-order allpass banks, sub-unity feedback, stereo phase offset, and an optional barberpole-style crossfade between offset banks to carve moving hollow notches without using flanger delay lines.
+PhaseCoffin is an EsionHsrahLatigid allpass phase excavation plug-in. It uses two six-stage first-order allpass banks, sub-unity feedback, stereo phase offset, and an optional barberpole-style crossfade between offset banks to carve moving hollow notches without using flanger delay lines.
 
 ## Identity
 
